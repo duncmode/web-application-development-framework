@@ -1,0 +1,46 @@
+# CI/CD Pipeline: Staging
+
+# This workflow runs when a PR is merged into the staging branch.
+# Copy to your project's .github/workflows/ directory.
+# Update the deployment step for your specific platform.
+
+name: Staging Deploy
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+
+      - name: Build
+        run: npm run build
+
+      # TODO: Add deployment step for your platform
+      # Example for Vercel:
+      # - name: Deploy to Staging
+      #   run: vercel --token=${{ secrets.VERCEL_TOKEN }}
